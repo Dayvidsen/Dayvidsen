@@ -1,0 +1,49 @@
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+#include <thread>
+#include <chrono>
+#include <algorithm>
+
+std::string generateRandomPassword(int length) {
+    const std::string lowercaseCharset = "abcdefghijklmnopqrstuvwxyz";
+    const std::string uppercaseCharset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const std::string digitCharset = "0123456789";
+
+    const int lowercaseSize = lowercaseCharset.size();
+    const int uppercaseSize = uppercaseCharset.size();
+    const int digitSize = digitCharset.size();
+
+    // Ensure at least one character from each character set
+    std::string password;
+    password += lowercaseCharset[rand() % lowercaseSize];
+    password += uppercaseCharset[rand() % uppercaseSize];
+    password += digitCharset[rand() % digitSize];
+
+    // Generate the rest of the password
+    const std::string combinedCharset = lowercaseCharset + uppercaseCharset + digitCharset;
+    const int combinedSize = combinedCharset.size();
+    for (int i = 3; i < length; ++i) {
+        password += combinedCharset[rand() % combinedSize];
+    }
+
+    // Shuffle the password to randomize the character order
+    std::random_shuffle(password.begin(), password.end());
+
+    return password;
+}
+
+int main() {
+    // Seed the random number generator
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    while (true) {
+        std::string password = generateRandomPassword(10);
+        std::cout << "Generated password: " << password << std::endl;
+
+        std::this_thread::sleep_for(std::chrono::minutes(10));
+    }
+
+    return 0;
+}
